@@ -9,13 +9,22 @@ description: Download (clone/mirror) a live web page to local disk with the gocl
 after the domain, then rewrites the links inside the HTML so the copy opens
 offline in a browser.
 
+The commands below use `$SKILL` for this skill's own directory — the one
+holding this SKILL.md, reported to you when the skill loads. Set it once so the
+snippets work regardless of where the skill is installed (project `.claude/`,
+personal `~/.claude/`, or elsewhere):
+
+```bash
+SKILL=<absolute path of this skill's directory>
+```
+
 ## Install / ensure it is available
 
 Never assume the binary exists — the install script is idempotent and cheap, so
 just run it. It prints the binary path on stdout and diagnostics on stderr:
 
 ```bash
-GOCLONE="$(.claude/skills/goclone/scripts/install.sh)"
+GOCLONE="$("$SKILL/scripts/install.sh")"
 ```
 
 It tries `go install github.com/goclone-dev/goclone/cmd/goclone@latest`, then
@@ -32,7 +41,7 @@ when a page came back empty — the wrapper pins the destination and prints what
 actually landed on disk:
 
 ```bash
-.claude/skills/goclone/scripts/clone.sh -d ./clones https://example.com
+"$SKILL/scripts/clone.sh" -d ./clones https://example.com
 ```
 
 Options: `-d` output dir (default `.`), `-u` custom User-Agent, `-p` proxy
@@ -43,14 +52,10 @@ Raw form, if you need a flag the wrapper doesn't expose (note that goclone
 writes into the current directory, so `cd` first):
 
 ```bash
-SKILL_DIR="$PWD/.claude/skills/goclone"
 mkdir -p clones && cd clones
 "$GOCLONE" --user_agent "Mozilla/5.0 ..." https://example.com
-python3 "$SKILL_DIR/scripts/fix_offline.py" example.com
+python3 "$SKILL/scripts/fix_offline.py" example.com
 ```
-
-Script paths above are written from the repo root; adjust if the working
-directory differs.
 
 ## The offline fixup (why the wrapper runs it)
 
