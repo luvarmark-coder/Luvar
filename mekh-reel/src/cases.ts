@@ -64,9 +64,9 @@ export const CASES: CaseDef[] = [
   {
     key: 'tandis', n: 6, name: 'TANDIS', meta: 'Душанбе · студия мужского ухода',
     room: { bg: '#0A0B0A', glow: 'rgba(63,180,138,0.22)', ink: '#EEECE1', ink2: '#A9B2AC' },
-    cover: img('tandis-cover'), second: img('tandis-2'), mob: img('tandis-mob'), variant: 'push', phoneSide: 'right',
+    cover: img('tandis-2'), mob: img('tandis-mob'), variant: 'push', phoneSide: 'right',
     before: 'Прайс в виде фото, которое никто не прочитает',
-    now: 'Каждая строка прайса открывает *WhatsApp*',
+    now: 'Запись на любую услугу — сразу *в WhatsApp*',
     widget: 'bubble',
   },
 ];

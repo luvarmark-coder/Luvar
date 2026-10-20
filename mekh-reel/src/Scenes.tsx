@@ -7,7 +7,7 @@ import { SHOTS } from './timeline';
 
 const emph: React.CSSProperties = { color: C.accent, fontStyle: 'italic' };
 const eyebrow: React.CSSProperties = {
-  position: 'absolute', left: 80, fontFamily: SANS, fontSize: 30, fontWeight: 700, letterSpacing: '0.18em', color: C.fg3,
+  position: 'absolute', left: 80, fontFamily: SANS, fontSize: 32, fontWeight: 700, letterSpacing: '0.18em', color: C.fg2,
 };
 
 const Drift: React.FC<{ dur: number; children: React.ReactNode }> = ({ dur, children }) => {
@@ -26,7 +26,7 @@ export const Hook: React.FC = () => {
         {/* frame 0 is never empty: brand eyebrow + hairline are already on screen */}
         <div style={{ ...eyebrow, top: 236, display: 'flex', alignItems: 'center', gap: 18 }}>
           <span style={{ width: 16, height: 16, borderRadius: 8, background: C.accent }} />
-          MEKH · ДУБАЙ ⇄ ДУШАНБЕ
+          mekh.dev · ДУБАЙ ⇄ ДУШАНБЕ
         </div>
         <div style={{ position: 'absolute', left: 80, right: 80, top: 300, height: 2, background: C.line, transform: `scaleX(${ramp(f, 0, 26, EASE.snappy).toFixed(3)})`, transformOrigin: '0 50%' }} />
 
@@ -86,7 +86,7 @@ const TILES: Tile[] = [
 ];
 // each tile arrives faster than the last (R2): gaps 9,8,7,6,5,4,3,3 frames
 const GAPS = [0, 9, 8, 7, 6, 5, 4, 3, 3];
-const TILE_START = GAPS.reduce<number[]>((a, g, i) => [...a, (i ? a[i - 1] : 8) + g], []);
+const TILE_START = GAPS.reduce<number[]>((a, g, i) => [...a, (i ? a[i - 1] : 3) + g], []);
 
 export const More: React.FC = () => {
   const f = useCurrentFrame();
@@ -109,13 +109,13 @@ export const More: React.FC = () => {
                 <div style={{ width: CW, height: 187, borderRadius: 18, overflow: 'hidden', boxShadow: '0 18px 40px rgba(0,0,0,0.4)', outline: '1px solid rgba(255,255,255,0.12)' }}>
                   <Img src={staticFile(`site/assets/img/work/${t.thumb}.webp`)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
-                <div style={{ marginTop: 12, fontFamily: SANS, fontSize: 34, fontWeight: 600, color: C.fg, whiteSpace: 'nowrap', letterSpacing: '-0.01em' }}>{t.name}</div>
+                <div style={{ marginTop: 12, fontFamily: SANS, fontSize: 32, fontWeight: 600, color: C.fg, whiteSpace: 'nowrap', letterSpacing: '-0.015em' }}>{t.name}</div>
                 <div style={{ fontFamily: SANS, fontSize: 32, color: C.fg3, whiteSpace: 'nowrap' }}>{t.type}</div>
               </>
             ) : (
               <div style={{ width: CW, height: 187 + 12 + 40 + 38, borderRadius: 18, background: C.accent, color: C.onAccent, padding: 24, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div style={{ fontFamily: SANS, fontSize: 30, fontWeight: 700, letterSpacing: '0.16em' }}>NEURON</div>
-                <div style={{ fontFamily: SERIF, fontSize: 34, lineHeight: 1.05, letterSpacing: '-0.02em' }}>AI-автоматизация</div>
+                <div style={{ fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>AI-автоматизация</div>
               </div>
             )}
           </div>
@@ -129,7 +129,7 @@ export const More: React.FC = () => {
 const VALUES = ['Заявки — сразу *в WhatsApp*', 'Заказ — *без очереди*', 'Сайт — *на языке ваших клиентов*'];
 export const Value: React.FC = () => {
   const f = useCurrentFrame();
-  const starts = [6, 30, 54];
+  const starts = [3, 22, 41];
   return (
     <Stage bg={C.bg} glow="rgba(94,227,172,0.14)" glowAt={[0.5, 0.3]}>
       <div style={{ ...eyebrow, top: 232, opacity: ramp(f, 0, 14, EASE.out) }}>ЧТО ЭТО ДАЁТ БИЗНЕСУ</div>
@@ -147,7 +147,7 @@ export const Value: React.FC = () => {
           </div>
         );
       })}
-      <div style={{ position: 'absolute', left: 80, top: 400 + 2 * 330 + 92 + 232, fontFamily: SANS, fontSize: 40, letterSpacing: '0.2em', color: C.fg3, opacity: ramp(f, 82, 18, EASE.out) }}>
+      <div style={{ position: 'absolute', left: 80, top: 400 + 2 * 330 + 92 + 232, fontFamily: SANS, fontSize: 40, letterSpacing: '0.2em', color: C.fg2, opacity: ramp(f, 82, 18, EASE.out) }}>
         RU · EN · TJ · AR
       </div>
     </Stage>
@@ -158,7 +158,7 @@ export const Value: React.FC = () => {
 export const Outro: React.FC = () => {
   const f = useCurrentFrame();
   const word = 'mekh.dev'.split('');
-  const cta = ramp(f, 62, 22, EASE.overshoot);
+  const cta = ramp(f, 54, 22, EASE.overshoot);
   const pulse = 1 + 0.012 * Math.sin((Math.max(0, f - 84) / 29) * Math.PI * 2);
   return (
     <Stage bg={C.bg} glow="rgba(94,227,172,0.24)" glowAt={[0.5, 0.42]}>
@@ -173,7 +173,7 @@ export const Outro: React.FC = () => {
       <div style={{ position: 'absolute', left: 80, right: 80, top: 880, textAlign: 'center', opacity: ramp(f, 38, 20, EASE.out), transform: `translateY(${((1 - ramp(f, 38, 20, EASE.out)) * 20).toFixed(1)}px)`, fontFamily: SANS, fontSize: 58, color: C.fg2, letterSpacing: '-0.01em' }}>
         Сайты и AI-автоматизация
       </div>
-      <div style={{ position: 'absolute', left: 80, right: 80, top: 962, textAlign: 'center', opacity: ramp(f, 46, 20, EASE.out), fontFamily: SANS, fontSize: 40, color: C.fg3, letterSpacing: '0.14em' }}>
+      <div style={{ position: 'absolute', left: 80, right: 80, top: 962, textAlign: 'center', opacity: ramp(f, 46, 20, EASE.out), fontFamily: SANS, fontSize: 40, color: C.fg2, letterSpacing: '0.14em' }}>
         ДУБАЙ ⇄ ДУШАНБЕ
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, top: 1110, display: 'flex', justifyContent: 'center', opacity: Math.min(1, cta * 2), transform: `translateY(${((1 - cta) * 40).toFixed(1)}px) scale(${(mix(0.92, 1, cta) * pulse).toFixed(4)})` }}>
@@ -181,6 +181,9 @@ export const Outro: React.FC = () => {
           <WaIcon size={52} />
           Напишите в WhatsApp
         </div>
+      </div>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 1262, textAlign: 'center', opacity: ramp(f, 70, 18, EASE.out), fontFamily: SANS, fontSize: 40, color: C.fg2 }}>
+        Отвечаю в течение часа
       </div>
     </Stage>
   );

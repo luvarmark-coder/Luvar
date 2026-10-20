@@ -7,8 +7,8 @@ import type { CaseDef } from './cases';
 import { WIPE } from './timeline';
 
 // ── layout (px, 1080×1920; Reels UI keeps ~top 220 and bottom ~480 busy, so the story lives in 230–1420) ──
-const DESK = { w: 900, h: 562, x: 90, y: 440 };
-const PHONE = { w: 250, h: 542, y: 600 };
+const DESK = { w: 820, h: 512, x: 90, y: 490 };
+const PHONE = { w: 210, h: 455, y: 560 };
 const PANEL = { x: 60, y: 1070, w: 960, h: 350 };
 export const SWAP = beatF(4); // "ДО" → "СЕЙЧАС" lands on beat 4 of the shot
 const WIDGET_AT = SWAP + 20;
@@ -18,6 +18,9 @@ const shadow = '0 40px 90px rgba(0,0,0,0.38), 0 10px 24px rgba(0,0,0,0.25)';
 const Screen: React.FC<{ src: string; style?: React.CSSProperties }> = ({ src, style }) => (
   <Img src={staticFile(src)} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', ...style }} />
 );
+
+// the desktop sits on the side opposite the phone so the phone overlaps only ~45px of it
+const deskLeft = (def: CaseDef) => (def.variant === 'phone' ? 40 : def.phoneSide === 'left' ? 1080 - 60 - DESK.w : 60);
 
 const Desktop: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
   const { variant, cover, second } = def;
@@ -40,7 +43,7 @@ const Desktop: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
   }
 
   // inner content: page "scrolls" to the second screen (scroll) or cross-fades (push), on the swap beat
-  const sw = ramp(f, SWAP - 4, 26, EASE.smooth);
+  const sw = ramp(f, SWAP - 4, 20, EASE.smooth);
   let inner: React.ReactNode;
   if (second && variant === 'scroll') {
     inner = (
@@ -63,7 +66,7 @@ const Desktop: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
   return (
     <div
       style={{
-        position: 'absolute', left: DESK.x, top: DESK.y, width: DESK.w, height: DESK.h,
+        position: 'absolute', left: deskLeft(def), top: DESK.y, width: DESK.w, height: DESK.h,
         borderRadius: 28, overflow: 'hidden', boxShadow: shadow, opacity, transform, transformOrigin: '50% 50%',
         outline: '1px solid rgba(255,255,255,0.14)', background: '#000',
       }}
@@ -76,14 +79,14 @@ const Desktop: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
 const Phone: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
   const big = def.variant === 'phone';
   const enter = ramp(f, big ? 12 : 16, 30, EASE.out);
-  const left = def.phoneSide === 'left' ? 42 : 1080 - 42 - PHONE.w;
-  const scale = big ? 1.34 : 1;
+  const left = def.phoneSide === 'left' ? 36 : 1080 - 36 - PHONE.w;
+  const scale = big ? 1.1 : 1;
   const rot = big ? 3 : 0;
-  const y = PHONE.y - (big ? 24 : 0);
+  const y = big ? PHONE.y - 100 : PHONE.y;
   return (
     <div
       style={{
-        position: 'absolute', left: big ? 1080 - 60 - PHONE.w * scale : left, top: y, width: PHONE.w, height: PHONE.h,
+        position: 'absolute', left: big ? 1080 - 50 - PHONE.w * scale : left, top: y, width: PHONE.w, height: PHONE.h,
         transform: `translateY(${((1 - enter) * 360).toFixed(1)}px) rotate(${rot}deg) scale(${scale})`,
         transformOrigin: '50% 0%', opacity: Math.min(1, enter * 2),
         borderRadius: 42, background: '#0a0a0a', padding: 8, boxShadow: shadow,
@@ -109,7 +112,7 @@ const Widget: React.FC<{ def: CaseDef; f: number }> = ({ def, f }) => {
   const base: React.CSSProperties = { opacity: Math.min(1, p * 2), transform: `translateY(${((1 - p) * 40).toFixed(1)}px) scale(${mix(0.92, 1, p).toFixed(3)})` };
   const rightAnchored = def.phoneSide === 'left' || def.variant === 'phone';
   const side: React.CSSProperties = def.variant === 'phone' ? { left: 96 } : def.phoneSide === 'left' ? { right: 70 } : { left: 70 };
-  const top = DESK.y + DESK.h - 56;
+  const top = DESK.y + DESK.h - 56; // widget bottom ≈ 1030, panel top 1070
   void rightAnchored;
 
   switch (def.widget) {
@@ -219,15 +222,15 @@ export const CaseShot: React.FC<{ def: CaseDef; total: number }> = ({ def, total
         {/* header */}
         <div
           style={{
-            position: 'absolute', left: 80, top: 190, fontFamily: SANS, fontSize: 30, fontWeight: 700, letterSpacing: '0.18em',
-            color: r.ink2, opacity: ramp(f, 6, 14, EASE.out), display: 'flex', gap: 22, alignItems: 'center',
+            position: 'absolute', left: 80, top: 232, fontFamily: SANS, fontSize: 32, fontWeight: 700, letterSpacing: '0.18em',
+            color: r.ink, opacity: ramp(f, 6, 14, EASE.out) * 0.82, display: 'flex', gap: 22, alignItems: 'center',
           }}
         >
           <span>ПРОЕКТ {String(def.n).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
           <span style={{ width: 56, height: 2, background: r.ink2, opacity: 0.6 }} />
         </div>
-        <Words words={[{ text: def.name }]} start={6} stagger={0} dur={26} dy={46} blur={16} style={{ position: 'absolute', left: 76, top: 250, ...nameStyle }} />
-        <div style={{ position: 'absolute', left: 80, top: 380, fontFamily: SANS, fontSize: 38, color: r.ink2, opacity: ramp(f, 14, 20, EASE.out), transform: `translateY(${((1 - ramp(f, 14, 20, EASE.out)) * 16).toFixed(1)}px)` }}>
+        <Words words={[{ text: def.name }]} start={6} stagger={0} dur={26} dy={46} blur={16} style={{ position: 'absolute', left: 76, top: 290, ...nameStyle }} />
+        <div style={{ position: 'absolute', left: 80, top: 420, fontFamily: SANS, fontSize: 38, color: r.ink2, opacity: ramp(f, 14, 20, EASE.out), transform: `translateY(${((1 - ramp(f, 14, 20, EASE.out)) * 16).toFixed(1)}px)` }}>
           {def.meta}
         </div>
 
