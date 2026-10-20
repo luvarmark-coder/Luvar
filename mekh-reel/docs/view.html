@@ -1,0 +1,82 @@
+<title>Mekh Reel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Layout: one phone-shaped player centred on a quiet green ground; the version switch sits under it. */
+  :root {
+    --bg: #081A13;
+    --surface: #112B21;
+    --fg: #EEECE1;
+    --fg2: #B4C2B9;
+    --accent: #5EE3AC;
+    --on-accent: #04130D;
+    --line: #22463A;
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans: "Inter Tight", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    padding-block: 28px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  main { max-width: 440px; margin: 0 auto; display: grid; gap: 22px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 2.4rem; line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+  h1 em { color: var(--accent); }
+  p { margin: 0; color: var(--fg2); font-size: 1rem; line-height: 1.5; }
+  .player { border-radius: 22px; overflow: hidden; background: #000; outline: 1px solid var(--line); aspect-ratio: 9 / 16; max-width: 100%; }
+  video { width: 100%; height: 100%; display: block; background: #000; }
+  .switch { display: flex; gap: 8px; flex-wrap: wrap; }
+  .switch button {
+    font: inherit; font-weight: 600; font-size: 0.95rem; padding: 10px 18px; border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--fg2); border: 1.5px solid var(--line);
+  }
+  .switch button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .switch button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .meta { font-size: 0.9rem; color: var(--fg2); display: grid; gap: 4px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .meta b { color: var(--fg); font-weight: 600; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600&family=Instrument+Serif&display=swap">
+
+<main>
+  <header style="display:grid;gap:10px">
+    <h1>Что сайт даёт <em>бизнесу</em></h1>
+    <p>Reels из портфолио Mekh: шесть работ в формате «до → сейчас», ещё восемь проектов и три выгоды для владельца.</p>
+  </header>
+
+  <div class="player">
+    <video id="v" src="reel.mp4" poster="poster.jpg" controls playsinline loop preload="metadata"></video>
+  </div>
+
+  <div class="switch" role="group" aria-label="Версия видео">
+    <button id="b-music" aria-pressed="true" type="button">С музыкой</button>
+    <button id="b-mute" aria-pressed="false" type="button">Без музыки</button>
+  </div>
+
+  <div class="meta">
+    <span><b>Формат:</b> 1080×1920, 30 кадров/с, 41,6 с</span>
+    <span><b>Язык:</b> русский</span>
+    <span><b>Музыка:</b> tech-house, 124 BPM; смены кейсов идут на биты</span>
+  </div>
+</main>
+
+<script>
+  var v = document.getElementById('v');
+  var bm = document.getElementById('b-music');
+  var bn = document.getElementById('b-mute');
+  function pick(src, on, off) {
+    var t = v.currentTime, paused = v.paused;
+    v.src = src;
+    v.addEventListener('loadedmetadata', function once() {
+      v.removeEventListener('loadedmetadata', once);
+      try { v.currentTime = t; } catch (e) {}
+      if (!paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    });
+    on.setAttribute('aria-pressed', 'true');
+    off.setAttribute('aria-pressed', 'false');
+  }
+  bm.addEventListener('click', function () { pick('reel.mp4', bm, bn); });
+  bn.addEventListener('click', function () { pick('reel-nobgm.mp4', bn, bm); });
+</script>
