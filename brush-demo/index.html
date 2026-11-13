@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>p5.brush demo</title>
+<style>body{margin:0;background:#eee}</style>
+<script src="p5.min.js"></script>
+<script src="p5.brush.js"></script>
+</head><body>
+<script>
+function setup() {
+  createCanvas(700, 410, WEBGL);   // WEBGL обязателен
+  background("#f6f1e8");
+  brush.scaleBrushes(3);
+
+  brush.set("HB", "#2f2a26", 1.4); // кисть, цвет, толщина
+  brush.line(-220, -80, 180, 40);
+
+  brush.fill("#d7c3a3", 120);      // заливка + прозрачность
+  brush.noStroke();
+  brush.circle(120, 20, 70);
+
+  brush.set("rotring", "#1f4b99", 0.8);
+  brush.noFill();
+  brush.hatch(7, 35);              // штриховка: расстояние, угол
+  brush.rect(-140, 40, 120, 90, "center");
+}
+</script></body></html>
